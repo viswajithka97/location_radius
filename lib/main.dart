@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -56,27 +57,34 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-              onPressed: () {
-                Get.to(
-                  () => const LocationFetch(),
-                );
-              },
-              child: const Text("Location fetch")),
-          ElevatedButton(
-            onPressed: () async {
-              log("pressed");
-              var ipAddress = IpAddress(type: RequestType.json);
-              dynamic data = await ipAddress.getIpAddress();
-              log(data.toString());
-            },
-            child: const Text("Wifi fetch"),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    Get.to(
+                      () => const LocationFetch(),
+                    );
+                  },
+                  child: const Text("Location fetch")),
+              const SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  log("pressed");
+                  var ipAddress = IpAddress(type: RequestType.json);
+                  dynamic data = await ipAddress.getIpAddress();
+                  log(data.toString());
+                },
+                child: const Text("Network Check"),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -101,10 +102,30 @@ class LocationController extends GetxController {
     );
     double distanceInKm = distanceInMeters / 1000;
     if (distanceInKm <= 2) {
-      print('The location is within a 2km radius of the prime location.');
+      Get.defaultDialog(
+        content: const Text(
+          "The location is within 2km radius from your location.",
+          textAlign: TextAlign.center,
+        ),
+        cancel: ElevatedButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text("Okay")),
+      );
       return true;
     } else {
-      print('The location is outside the 2km radius of the prime location.');
+      Get.defaultDialog(
+        content: const Text(
+          "The location is outside 2km radius from your location.",
+          textAlign: TextAlign.center,
+        ),
+        cancel: ElevatedButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text("Okay")),
+      );
       return false;
     }
   }

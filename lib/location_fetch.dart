@@ -29,9 +29,12 @@ class LocationFetch extends StatelessWidget {
             centerTitle: true,
           ),
           body: GoogleMap(
+            compassEnabled: true,
             initialCameraPosition: initialPosition,
             mapType: MapType.normal,
             mapToolbarEnabled: true,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
             markers: markers,
             onTap: (latLng) {
               controller.onTapMarker(latLng);
@@ -44,8 +47,10 @@ class LocationFetch extends StatelessWidget {
             },
           ),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+              FloatingActionButtonLocation.endContained,
           floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.white,
+            shape: const CircleBorder(),
             onPressed: () async {
               controller.getCurrentLocation();
             },
