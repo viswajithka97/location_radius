@@ -1,11 +1,13 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_radius/location_fetch.dart';
+import 'package:location_radius/notification_code.dart';
 
 class LocationController extends GetxController {
   final geolocator =
@@ -61,7 +63,6 @@ class LocationController extends GetxController {
   getAddressfromLatLang() async {
     try {
       p = await placemarkFromCoordinates(latitude!, longitude!);
-      log(index.toString());
       Placemark place = index == null ? p![0] : p![index!];
       locatlityName = "${place.name}";
       // locatlity = "${place.locality}";
@@ -89,30 +90,48 @@ class LocationController extends GetxController {
     longitude = latLng.longitude;
     update();
     getAddressfromLatLang();
-    await _checkIfWithinBounds();
+    await checkIfWithinBounds();
     update();
   }
 
-  Future<bool> _checkIfWithinBounds() async {
+  Future<bool> checkIfWithinBounds({double? lat, double? long}) async {
     double distanceInMeters = Geolocator.distanceBetween(
-      latitude!,
-      longitude!,
-      19.011259939007626,
-      72.83739959985151,
+      lat ?? latitude!,
+      long ?? longitude!,
+      9.930520155469766,
+      76.35232860320333,
     );
     double distanceInKm = distanceInMeters / 1000;
     if (distanceInKm <= 2) {
-      Get.defaultDialog(
-        content: const Text(
-          "The location is within 2km radius from your location.",
-          textAlign: TextAlign.center,
+      flutterLocalNotificationsPlugin.show(
+        0,
+        "Alert",
+        "Viswajith is near the office",
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            playSound: true,
+            icon: '@mipmap/ic_launcher',
+          ),
+          iOS: const DarwinNotificationDetails(
+            sound: "assets/notify.mp3",
+            presentSound: false,
+          ),
         ),
-        cancel: ElevatedButton(
-            onPressed: () {
-              Get.back();
-            },
-            child: const Text("Okay")),
+        // payload: message.data['type'].toString(),
       );
+      // Get.defaultDialog(
+      //   content: const Text(
+      //     "The location is within 2km radius from your location.",
+      //     textAlign: TextAlign.center,
+      //   ),
+      //   cancel: ElevatedButton(
+      //       onPressed: () {
+      //         Get.back();
+      //       },
+      //       child: const Text("Okay")),
+      // );
       return true;
     } else {
       Get.defaultDialog(
